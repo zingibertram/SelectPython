@@ -3,16 +3,4 @@
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:SelectPython.UI">
 
-    <ObjectDataProvider x:Key="PlatformEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-        <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="local:Platform"/>
-        </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
-
-    <ObjectDataProvider x:Key="PyqtVersionEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-        <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="local:PyqtVersion"/>
-        </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
-
 </ResourceDictionary>

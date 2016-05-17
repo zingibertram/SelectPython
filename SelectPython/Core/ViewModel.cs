@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace SelectPython.Core
 {
@@ -9,13 +10,23 @@ namespace SelectPython.Core
         [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChanged(String propertyName)
+        virtual protected  void OnPropertyChanged(String propertyName)
         {
             var handler = PropertyChanged;
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        virtual protected void UpdateCommands()
+        {
+        }
+
+        [OnDeserialized]
+        protected void OnDeserializedMethod(StreamingContext context)
+        {
+            UpdateCommands();
         }
     }
 }

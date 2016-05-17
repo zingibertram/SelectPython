@@ -16,10 +16,14 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Content="Add"
-                    Click="AddPythonButton_Click"/>
+                    Command="{Binding Path=AddPythonCommand}"/>
+            <Button Content="Delete"
+                    Command="{Binding Path=DeletePythonCommand}"/>
+            <Button Content="Apply"
+                    Command="{Binding Path=ApplyPythonCommand}"/>
         </StackPanel>
         
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding Path=Pythons}">
+        <!--<ItemsControl Grid.Row="1" ItemsSource="{Binding Path=Pythons}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical"/>
@@ -40,6 +44,31 @@
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        </ItemsControl>-->
+        <ListView Grid.Row="1"
+                  ItemsSource="{Binding Path=Pythons}"
+                  SelectedItem="{Binding Path=SelectedPython, Mode=TwoWay}"
+                  SelectionMode="Single">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Python version"
+                                    DisplayMemberBinding="{Binding Path=PythonVersion}"/>
+                    <GridViewColumn Header="Platform"
+                                    DisplayMemberBinding="{Binding Path=Platform}"/>
+                    <GridViewColumn Header="PyQt version"
+                                    DisplayMemberBinding="{Binding Path=PyqtVersion}"/>
+                    <GridViewColumn Header="Python path">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="..." Command="{Binding Path=ChangePythonCommand}"/>
+                                    <TextBlock Text="{Binding Path=PythonPath}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

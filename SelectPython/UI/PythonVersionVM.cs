@@ -1,44 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reflection;
 using System.IO;
+using System.Diagnostics;
+using System.Windows.Input;
+using Microsoft.Win32;
 using SelectPython.Core;
 
 namespace SelectPython.UI
 {
-    [Serializable]
-    public enum Platform
-    {
-        x32, x64
-    }
-
-    [Serializable]
-    public enum PyqtVersion
-    {
-        Qt4, Qt5
-    }
 
     [Serializable]
     public class PythonVersionVM: ViewModel
     {
         private String pythonVersion;
         private String pythonPath;
-        private PyqtVersion pyqtVersion;
-        private String pyqtLib;
-        private Platform platform;
-        private Boolean editable;
-        private String saveEdit;
+        private String pyqtVersion;
+        private String platform;
         private Boolean versionApplied;
+        private String pyqtPath;
+        private String vtkPath;
+        private String scriptsPath;
+        [NonSerialized]
+        private ICommand changePythonCommand;
 
         public PythonVersionVM()
         {
-            editable = true;
-            saveEdit = "Save";
+            UpdateCommands();
         }
 
         public String PythonVersion
         {
             get { return pythonVersion; }
-            set
+            private set
             {
                 pythonVersion = value;
                 OnPropertyChanged("PythonVersion");
@@ -55,70 +48,23 @@ namespace SelectPython.UI
             }
         }
 
-        public PyqtVersion PyqtVersion
+        public String PyqtVersion
         {
             get { return pyqtVersion; }
-            set
+            private set
             {
                 pyqtVersion = value;
-                switch(value)
-                {
-                    case PyqtVersion.Qt4:
-                        PyqtLib = "PyQt4";
-                        break;
-                    case PyqtVersion.Qt5:
-                        PyqtLib = "PyQt5";
-                        break;
-                }
                 OnPropertyChanged("PyqtVersion");
             }
         }
 
-        public String PyqtLib
-        {
-            get { return pyqtLib; }
-            set
-            {
-                pyqtLib = value;
-                OnPropertyChanged("PyqtLib");
-            }
-        }
-
-        public Platform Platform
+        public String Platform
         {
             get { return platform; }
-            set
+            private set
             {
                 platform = value;
                 OnPropertyChanged("Platform");
-            }
-        }
-
-        public Boolean Editable
-        {
-            get { return editable; }
-            set
-            {
-                editable = value;
-                if (value)
-                {
-                    SaveEdit = "Save";
-                }
-                else
-                {
-                    SaveEdit = "Edit";
-                }
-                OnPropertyChanged("Editable");
-            }
-        }
-
-        public String SaveEdit
-        {
-            get { return saveEdit; }
-            set
-            {
-                saveEdit = value;
-                OnPropertyChanged("SaveEdit");
             }
         }
 
@@ -132,32 +78,91 @@ namespace SelectPython.UI
             }
         }
 
-        public void Apply(object o)
+        public ICommand ChangePythonCommand
         {
-            var pyqtPath = Path.Combine(new string[] { PythonPath, "Lib", "site-packaged", PyqtLib });
-            var vtkPath = Path.Combine(new string[] { PythonPath, "Lib", "site-packaged", PyqtLib });
-            var scriptsPath = Path.Combine(new string[] { PythonPath, "Scripts" });
-
-            var target = EnvironmentVariableTarget.User;
-
-            var name = "PATH";
-            var value = Environment.GetEnvironmentVariable(name, target);
-
-            var variables = value.Split(';');
-
-            var newVariables = new List<String>();
-            foreach(var v in variables)
+            get { return changePythonCommand; }
+            private set
             {
-                var lv = v.ToLower();
-                if (!lv.Contains("win") && !lv.Contains("python"))
+                changePythonCommand = value;
+                OnPropertyChanged("ChangePythonCommand");
+            }
+        }
+
+        public String PyqtPath
+        {
+            get { return pyqtPath; }
+        }
+
+        public String ScriptsPath
+        {
+            get { return scriptsPath; }
+        }
+
+        public String VtkPath
+        {
+            get { return vtkPath; }
+        }
+
+        override protected void UpdateCommands()
+        {
+            if (ChangePythonCommand == null)
+            {
+                ChangePythonCommand = new RelayCommand(OnChangePython);
+            }
+        }
+
+        private void UpdateLibPath()
+        {
+            pyqtPath = Path.Combine(new string[] { PythonPath, "Lib", "site-packages", PyqtVersion });
+            vtkPath = Path.Combine(new string[] { PythonPath, "Lib", "site-packages", "vtk" });
+            scriptsPath = Path.Combine(new string[] { PythonPath, "Scripts" });
+            OnPropertyChanged("PyqtPath");
+            OnPropertyChanged("ScriptsPath");
+            OnPropertyChanged("VtkPath");
+        }
+
+        private void UpdatePythonVersion()
+        {
+            var pyPath = Path.Combine(PythonPath, "python.exe");
+            if (File.Exists(pyPath))
+            {
+                var verScriptPath = Path.Combine(new String[] { AppDomain.CurrentDomain.BaseDirectory, "Core", "Python", "PythonVersion.py" });
+
+                var process = new Process();
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.FileName = pyPath;
+                process.StartInfo.Arguments = verScriptPath;
+                process.Start();
+                String verInfo = process.StandardOutput.ReadToEnd();
+                verInfo = verInfo.Replace("\r\n", "");
+                verInfo = verInfo.Replace("(", "");
+                verInfo = verInfo.Replace(")", "");
+                var infos = verInfo.Split(new[] { "//" }, StringSplitOptions.RemoveEmptyEntries);
+                PythonVersion = infos[0];
+                Platform = infos[1];
+                PyqtVersion = infos[2];
+            }
+        }
+
+        private void OnChangePython(Object o)
+        {
+            var dlg = new OpenFileDialog();
+
+            dlg.InitialDirectory = "C:\\";
+            dlg.Filter = "Executable files (*.exe)|*.exe";
+            dlg.FilterIndex = 0;
+            dlg.RestoreDirectory = true;
+            if (dlg.ShowDialog() == true)
+            {
+                var filePath = dlg.FileName;
+                if (filePath.Contains("python.exe"))
                 {
-                    newVariables.Add(v);
+                    PythonPath = Path.GetDirectoryName(filePath);
+                    UpdatePythonVersion();
+                    UpdateLibPath();
                 }
             }
-            var newValue = String.Join(";", newVariables);
-            Environment.SetEnvironmentVariable(newValue, value);
-
-            VersionApplied = true;
         }
     }
 }

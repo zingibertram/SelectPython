@@ -1,16 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Linq;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SelectPython.UI
 {
@@ -38,11 +29,6 @@ namespace SelectPython.UI
         {
             get { return (SelectPythonVM)GetValue(SelectPythonVMProperty); }
             set { SetValue(SelectPythonVMProperty, value); }
-        }
-
-        private void AddPythonButton_Click(object sender, RoutedEventArgs e)
-        {
-            SelectPythonVM.Pythons.Add(new PythonVersionVM());
         }
 
         private void SaveVM()
