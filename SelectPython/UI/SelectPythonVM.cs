@@ -163,6 +163,15 @@ namespace SelectPython.UI
 
         private void OnDetectPython(Object o)
         {
+            var foundPythons = PythonDetector.Find();
+            if (foundPythons.Count > 0)
+            {
+                Pythons.Clear();
+            }
+            foreach(var p in foundPythons)
+            {
+                Pythons.Add(new PythonVersionVM { PythonPath = p });
+            }
         }
     }
 }

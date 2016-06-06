@@ -45,6 +45,9 @@ namespace SelectPython.UI
             {
                 pythonPath = value;
                 OnPropertyChanged("PythonPath");
+
+                UpdatePythonVersion();
+                UpdateLibPath();
             }
         }
 
@@ -131,8 +134,10 @@ namespace SelectPython.UI
                 var process = new Process();
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.FileName = pyPath;
                 process.StartInfo.Arguments = verScriptPath;
+                process.StartInfo.CreateNoWindow = true;
                 process.Start();
                 String verInfo = process.StandardOutput.ReadToEnd();
                 verInfo = verInfo.Replace("\r\n", "");
@@ -159,8 +164,6 @@ namespace SelectPython.UI
                 if (filePath.Contains("python.exe"))
                 {
                     PythonPath = Path.GetDirectoryName(filePath);
-                    UpdatePythonVersion();
-                    UpdateLibPath();
                 }
             }
         }

@@ -14,14 +14,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <ToolBar Grid.Row="0">
             <Button Content="Add"
                     Command="{Binding Path=AddPythonCommand}"/>
             <Button Content="Delete"
                     Command="{Binding Path=DeletePythonCommand}"/>
             <Button Content="Apply"
                     Command="{Binding Path=ApplyPythonCommand}"/>
-        </StackPanel>
+            <Button Content="Detect"
+                    Command="{Binding Path=DetectPythonCommand}"/>
+        </ToolBar>
         
         <!--<ItemsControl Grid.Row="1" ItemsSource="{Binding Path=Pythons}">
             <ItemsControl.ItemsPanel>
