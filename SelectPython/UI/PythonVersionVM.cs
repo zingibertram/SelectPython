@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Reflection;
 using System.IO;
 using System.Diagnostics;
-using System.Windows.Input;
-using Microsoft.Win32;
 using SelectPython.Core;
 
 namespace SelectPython.UI
@@ -20,8 +17,6 @@ namespace SelectPython.UI
         private String pyqtPath;
         private String vtkPath;
         private String scriptsPath;
-        [NonSerialized]
-        private ICommand changePythonCommand;
 
         public PythonVersionVM()
         {
@@ -81,16 +76,6 @@ namespace SelectPython.UI
             }
         }
 
-        public ICommand ChangePythonCommand
-        {
-            get { return changePythonCommand; }
-            private set
-            {
-                changePythonCommand = value;
-                OnPropertyChanged("ChangePythonCommand");
-            }
-        }
-
         public String PyqtPath
         {
             get { return pyqtPath; }
@@ -104,14 +89,6 @@ namespace SelectPython.UI
         public String VtkPath
         {
             get { return vtkPath; }
-        }
-
-        override protected void UpdateCommands()
-        {
-            if (ChangePythonCommand == null)
-            {
-                ChangePythonCommand = new RelayCommand(OnChangePython);
-            }
         }
 
         private void UpdateLibPath()
@@ -147,24 +124,6 @@ namespace SelectPython.UI
                 PythonVersion = infos[0];
                 Platform = infos[1];
                 PyqtVersion = infos[2];
-            }
-        }
-
-        private void OnChangePython(Object o)
-        {
-            var dlg = new OpenFileDialog();
-
-            dlg.InitialDirectory = "C:\\";
-            dlg.Filter = "Executable files (*.exe)|*.exe";
-            dlg.FilterIndex = 0;
-            dlg.RestoreDirectory = true;
-            if (dlg.ShowDialog() == true)
-            {
-                var filePath = dlg.FileName;
-                if (filePath.Contains("python.exe"))
-                {
-                    PythonPath = Path.GetDirectoryName(filePath);
-                }
             }
         }
     }

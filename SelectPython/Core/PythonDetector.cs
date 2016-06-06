@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SelectPython.Core
 {
@@ -28,9 +29,14 @@ namespace SelectPython.Core
                 FindPython(path, pythonPaths);
                 subDirs = path.GetDirectories();
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception error)
             {
-                Console.WriteLine("No access to " + path.FullName);
+                if (error is UnauthorizedAccessException)
+                {
+                    Console.WriteLine("No access to " + path.FullName);
+                }
+                Console.WriteLine(error);
+                Console.WriteLine(path.FullName);
             }
 
             foreach (var di in subDirs)

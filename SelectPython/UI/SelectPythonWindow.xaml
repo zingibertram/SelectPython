@@ -6,7 +6,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SelectPython.UI"
         mc:Ignorable="d"
-        Title="Select python" Height="480" Width="640"
+        Title="Select python"
+        Height="480"
+        Width="640"
+        Icon="/SelectPython;component/Images/python-snake.png"
         Closing="OnWindowClosing">
     <Grid DataContext="{Binding ElementName=Window, Path=SelectPythonVM}">
         <Grid.RowDefinitions>
@@ -15,38 +18,24 @@
         </Grid.RowDefinitions>
 
         <ToolBar Grid.Row="0">
-            <Button Content="Add"
-                    Command="{Binding Path=AddPythonCommand}"/>
-            <Button Content="Delete"
-                    Command="{Binding Path=DeletePythonCommand}"/>
-            <Button Content="Apply"
-                    Command="{Binding Path=ApplyPythonCommand}"/>
-            <Button Content="Detect"
-                    Command="{Binding Path=DetectPythonCommand}"/>
+            <Button ToolTip="Add"
+                    Command="{Binding Path=AddPythonCommand}">
+                <Image Source="/SelectPython;component/Images/plus.png" Width="24" Height="24"/>
+            </Button>
+            <Button ToolTip="Delete"
+                    Command="{Binding Path=DeletePythonCommand}">
+                <Image Source="/SelectPython;component/Images/minus.png" Width="24" Height="24"/>
+            </Button>
+            <Button ToolTip="Apply"
+                    Command="{Binding Path=ApplyPythonCommand}">
+                <Image Source="/SelectPython;component/Images/success.png" Width="24" Height="24"/>
+            </Button>
+            <Button ToolTip="Detect"
+                    Command="{Binding Path=DetectPythonCommand}">
+                <Image Source="/SelectPython;component/Images/search.png" Width="24" Height="24"/>
+            </Button>
         </ToolBar>
         
-        <!--<ItemsControl Grid.Row="1" ItemsSource="{Binding Path=Pythons}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderThickness="1" BorderBrush="Gray" Margin="2">
-                        <StackPanel Orientation="Horizontal" Margin="5">
-                            <ComboBox MinWidth="40" Margin="0, 0, 5, 0" ItemsSource="{Binding Source={StaticResource PlatformEnum}}" SelectedItem="{Binding Platform}" IsEnabled="{Binding Editable}"/>
-                            <ComboBox MinWidth="40" Margin="0, 0, 5, 0" ItemsSource="{Binding Source={StaticResource PyqtVersionEnum}}" SelectedItem="{Binding PyqtVersion}" IsEnabled="{Binding Editable}"/>
-                            <Button  MinWidth="100" Margin="0, 0, 5, 0" Content="{Binding Path=PythonPath}" IsEnabled="{Binding Editable}"/>
-                            <Button Margin="0, 0, 5, 0" Content="Delete"/>
-                            <Button Margin="0, 0, 5, 0" Content="{Binding Path=SaveEdit}"/>
-                            <Button Content="Apply to user PATH"/>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
         <ListView Grid.Row="1"
                   ItemsSource="{Binding Path=Pythons}"
                   SelectedItem="{Binding Path=SelectedPython, Mode=TwoWay}"
@@ -59,16 +48,8 @@
                                     DisplayMemberBinding="{Binding Path=Platform}"/>
                     <GridViewColumn Header="PyQt version"
                                     DisplayMemberBinding="{Binding Path=PyqtVersion}"/>
-                    <GridViewColumn Header="Python path">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="..." Command="{Binding Path=ChangePythonCommand}"/>
-                                    <TextBlock Text="{Binding Path=PythonPath}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    <GridViewColumn Header="Python path"
+                                    DisplayMemberBinding="{Binding Path=PythonPath}"/>
                 </GridView>
             </ListView.View>
         </ListView>

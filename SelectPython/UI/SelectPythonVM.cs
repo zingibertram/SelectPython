@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using SelectPython.Core;
 using System.Collections.Generic;
+using Microsoft.Win32;
+using System.IO;
 
 
 namespace SelectPython.UI
@@ -124,7 +126,22 @@ namespace SelectPython.UI
 
         private void OnAddPython(Object o)
         {
-            Pythons.Add(new PythonVersionVM());
+            var dlg = new OpenFileDialog();
+
+            dlg.InitialDirectory = "C:\\";
+            dlg.Filter = "Executable files (*.exe)|*.exe";
+            dlg.FilterIndex = 0;
+            dlg.RestoreDirectory = true;
+            if (dlg.ShowDialog() == true)
+            {
+                var filePath = dlg.FileName;
+                if (filePath.Contains("python.exe"))
+                {
+                    var pvm = new PythonVersionVM();
+                    Pythons.Add(pvm);
+                    pvm.PythonPath = Path.GetDirectoryName(filePath);
+                }
+            }
         }
 
         private void OnDeletePython(Object o)
