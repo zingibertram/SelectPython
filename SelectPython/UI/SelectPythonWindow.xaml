@@ -42,6 +42,13 @@
                   SelectionMode="Single">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="Applied">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <RadioButton IsEnabled="False" IsChecked="{Binding Path=VersionApplied}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="Python version"
                                     DisplayMemberBinding="{Binding Path=PythonVersion}"/>
                     <GridViewColumn Header="Platform"

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Diagnostics;
 using SelectPython.Core;
+using System.Windows;
 
 namespace SelectPython.UI
 {
@@ -103,27 +104,12 @@ namespace SelectPython.UI
 
         private void UpdatePythonVersion()
         {
-            var pyPath = Path.Combine(PythonPath, "python.exe");
-            if (File.Exists(pyPath))
+            var info = PythonInfo.Get(PythonPath);
+            if (info != null)
             {
-                var verScriptPath = Path.Combine(new String[] { AppDomain.CurrentDomain.BaseDirectory, "Core", "Python", "PythonVersion.py" });
-
-                var process = new Process();
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.FileName = pyPath;
-                process.StartInfo.Arguments = verScriptPath;
-                process.StartInfo.CreateNoWindow = true;
-                process.Start();
-                String verInfo = process.StandardOutput.ReadToEnd();
-                verInfo = verInfo.Replace("\r\n", "");
-                verInfo = verInfo.Replace("(", "");
-                verInfo = verInfo.Replace(")", "");
-                var infos = verInfo.Split(new[] { "//" }, StringSplitOptions.RemoveEmptyEntries);
-                PythonVersion = infos[0];
-                Platform = infos[1];
-                PyqtVersion = infos[2];
+                PythonVersion = info[1];
+                Platform = info[2];
+                PyqtVersion = info[3];
             }
         }
     }

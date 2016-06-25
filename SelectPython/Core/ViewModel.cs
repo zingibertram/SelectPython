@@ -23,6 +23,10 @@ namespace SelectPython.Core
         {
         }
 
+        virtual protected void UpdateData()
+        {
+        }
+
         [OnDeserialized]
         protected void OnDeserializedMethod(StreamingContext context)
         {

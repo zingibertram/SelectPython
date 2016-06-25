@@ -103,7 +103,7 @@ namespace SelectPython.UI
             }
             if (ApplyPythonCommand == null)
             {
-                ApplyPythonCommand = new RelayCommand(OnApplyPython, CanPython);
+                ApplyPythonCommand = new RelayCommand(OnApplyPython, CanApply);
             }
             if (DetectPythonCommand == null)
             {
@@ -149,6 +149,11 @@ namespace SelectPython.UI
             Pythons.Remove(SelectedPython);
         }
 
+        private Boolean CanApply(Object o)
+        {
+            return SelectedPython != null && !SelectedPython.VersionApplied;
+        }
+
         private void OnApplyPython(Object o)
         {
             foreach(var p in Pythons)
@@ -188,6 +193,27 @@ namespace SelectPython.UI
             foreach(var p in foundPythons)
             {
                 Pythons.Add(new PythonVersionVM { PythonPath = p });
+            }
+        }
+
+        protected override void UpdateData()
+        {
+            var pathValue = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
+            foreach (var p in Pythons)
+            {
+                p.VersionApplied = false;
+            }
+            foreach (var pv in Pythons)
+            {
+                if (Directory.Exists(pv.PythonPath)
+                    && pathValue.Contains(pv.PythonPath)
+                    && pathValue.Contains(pv.PyqtPath)
+                    && pathValue.Contains(pv.ScriptsPath)
+                    && pathValue.Contains(pv.VtkPath))
+                {
+                    pv.VersionApplied = true;
+                    break;
+                }
             }
         }
     }
